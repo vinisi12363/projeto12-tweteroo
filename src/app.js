@@ -23,26 +23,38 @@ app.post("/sign-up",(req, res)=>{
     console.log("users:", users)
    res.status(201).json({message:"OK"})
 })
+
 function addNewTweet(username, tweet){
     const photo=users.find(u=> u.username === username ).avatar;
     
     tweets.push ({username:username , tweet:tweet , avatar:photo})
 
 }
+
 app.post("/tweets",(req, res)=>{
   
     const {username , tweet} = req.body
 
-     if(users.filter(u => u.username===username)){
-        addNewTweet(username, tweet)
-        console.log("tweets", tweets)
-        res.status(201).json({message:"OK"})
-     }else{
-        return res.status(400).json({message:"UNAUTHORIZED"})
-     }
+    console.log("USENAME:", username)
+
+    if (!username || !tweet)
+    return res.status(400).json({error:"UNAUTHORIZED"})
     
+    if (username === undefined || tweet ===undefined)
+    return res.status(400).json({error:"UNAUTHORIZED"})
+
+
+    if( typeof username !== 'string' || typeof tweet !== 'string')
+    return res.status(400).json({error:"UNAUTHORIZED"})
+
+    if (users.some(u=>u.username===username)){
+        addNewTweet(username, tweet)
+        res.status(201).json({message:"OK"})
+    }else{
+        return res.status(400).json({error:"UNAUTHORIZED"})
+    }
    
- 
+      
 })
 
 app.get("/tweets", (req, res)=>{
