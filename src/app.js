@@ -3,7 +3,7 @@ import express from "express";
 
 const user = []
 const tweet = []
-const port = 5001
+const port = 5000
 
 
 const app = express()
