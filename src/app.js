@@ -33,17 +33,13 @@ app.post("/tweets",(req, res)=>{
   
     const {username , tweet} = req.body
 
-     if( users.filter(u => u.username===username)){
-        
-      
-
-        addNewTweet(username, tweet)
-        console.log("tweets", tweets)
-        return res.status(201).json({message:"OK"})
-     } else {
+     if(! users.filter(u => u.username===username)){
         return res.status(401).json({error:"UNAUTHORIZED"})
      }
-     
+    
+     addNewTweet(username, tweet)
+    console.log("tweets", tweets)
+ res.status(201).json({message:"OK"})
  
 })
 
