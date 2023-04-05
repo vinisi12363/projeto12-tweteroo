@@ -1,8 +1,10 @@
 import express from "express";
-import user from "../user.js";
-import tweet from "../tweet.js";
 
-const port = 5000
+
+const user = []
+const tweet = []
+const port = 5001
+
 
 const app = express()
 
@@ -15,35 +17,38 @@ app.post("/sign-up",(req, res)=>{
     const {username , avatar} = req.body
 
     if (!username || !avatar)
-    return res.send ("username ou avatar inválidos")
+    return res.status(400).json({error:"username ou avatar inválidos"})
     
-
     user.push({username:username , avatar:avatar})
-    res.send("OK")
+    console.log("users:", user)
+   res.status(201).json({message:"OK"})
 })
 app.post("/tweets",(req, res)=>{
-    if(user.includes(req.body.name)){
-        tweet.push(req.body.tweet)
-        res.send ("OK")
-    }else{
-        res.send("UNAUTHORIZED")
-    }
+    const {username , tweet} = req.body
+    let notEncountered = user.filter(user.username!==username)
+    if( notEncountered || !username)
+    return res.status(401).json({error:"UNAUTHORIZED"})
+   
+    tweet.push({username:username, tweet:tweet})
+    console.log("tweets", tweet)
+    return res.status(201).json({message:"OK"})
+ 
 })
 
-app.get("/tweets", (req, res)=>{
-    if(tweet.length > 0){
-        for(let i=9 ; i<tweet.length; i++){
-            res.send(
-                {
+// app.get("/tweets", (req, res)=>{
+//     if(tweet.length > 0){
+//         for(let i=9 ; i<tweet.length; i++){
+//             res.send(
+//                 {
                   
-                }
-            )
-        }
-    }else{
-        res.send([])
-    }
-})
+//                 }
+//             )
+//         }
+//     }else{
+//         res.send([])
+//     }
+// })
 
 app.listen(port, () => 
-console.log('Servidor iniciado na porta 3000')
+console.log(`Servidor iniciado na porta ${port}`)
 );
