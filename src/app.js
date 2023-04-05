@@ -1,13 +1,13 @@
 import express from "express";
+import cors from "cors";
 
-
-const user = []
-const tweet = []
+const users = []
+const tweets = []
 const port = 5000
 
 
 const app = express()
-
+app.use (cors())
 app.use(express.json())
 
 
@@ -19,35 +19,40 @@ app.post("/sign-up",(req, res)=>{
     if (!username || !avatar)
     return res.status(400).json({error:"username ou avatar inválidos"})
     
-    user.push({username:username , avatar:avatar})
-    console.log("users:", user)
+    users.push({username:username , avatar:avatar})
+    console.log("users:", users)
    res.status(201).json({message:"OK"})
 })
+function addNewTweet(username, tweet){
+    const photo=users.find(u=> u.username === username ).avatar;
+    
+    tweets.push ({username:username , tweet:tweet , avatar:photo})
+
+}
 app.post("/tweets",(req, res)=>{
+  
     const {username , tweet} = req.body
-    let notEncountered = user.filter(user.username!==username)
-    if( notEncountered || !username)
-    return res.status(401).json({error:"UNAUTHORIZED"})
-   
-    tweet.push({username:username, tweet:tweet})
-    console.log("tweets", tweet)
-    return res.status(201).json({message:"OK"})
+
+     if( users.filter(u => u.username===username)){
+        
+      
+
+        addNewTweet(username, tweet)
+        console.log("tweets", tweets)
+        return res.status(201).json({message:"OK"})
+     } else {
+        return res.status(401).json({error:"UNAUTHORIZED"})
+     }
+     
  
 })
 
-// app.get("/tweets", (req, res)=>{
-//     if(tweet.length > 0){
-//         for(let i=9 ; i<tweet.length; i++){
-//             res.send(
-//                 {
-                  
-//                 }
-//             )
-//         }
-//     }else{
-//         res.send([])
-//     }
-// })
+app.get("/tweets", (req, res)=>{
+    if(tweets.length === 0)
+    return res.send([])
+
+    res.send(tweets.slice(-10))
+})
 
 app.listen(port, () => 
 console.log(`Servidor iniciado na porta ${port}`)
