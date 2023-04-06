@@ -19,10 +19,6 @@ app.post("/sign-up",(req, res)=>{
     if (!username || !avatar)
     return res.status(400).json({error:"username ou avatar inválidos"})
     
-    if( typeof username !== 'string' || typeof tweet !== 'string')
-    return res.status(400).json({error:"username ou avatar inválidos"})
-   
-   
     users.push({username:username , avatar:avatar})
     console.log("users:", users)
    res.status(201).json({message:"OK"})
@@ -38,6 +34,8 @@ function addNewTweet(username, tweet){
 app.post("/tweets",(req, res)=>{
   
     const {username , tweet} = req.body
+
+    console.log("USENAME:", username)
 
     if (!username || !tweet)
     return res.status(400).json({error:"UNAUTHORIZED"})
@@ -60,11 +58,7 @@ app.post("/tweets",(req, res)=>{
 })
 
 app.get("/tweets", (req, res)=>{
-    let user = req.params.username
     if(tweets.length === 0)
-    return res.send([])
-
-    if(user === undefined || user===[])
     return res.send([])
 
     res.send(tweets.slice(-10))
