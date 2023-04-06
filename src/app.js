@@ -59,7 +59,7 @@ app.post("/tweets",(req, res)=>{
       
 })
 
-app.get("/tweets/:username", (req, res)=>{
+app.get("/tweets", (req, res)=>{
     let user = req.params.username
     if(tweets.length === 0)
     return res.send([])
